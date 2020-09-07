@@ -8,6 +8,7 @@ import mysql.connector
 import urllib.parse
 
 from pathlib import Path
+import pathlib
 from music21 import *
 from mido import MidiFile
 import magic
@@ -239,6 +240,8 @@ class Musikstueck():
             self.misc = miscstr
             self.tempo = var_tempo
             self.key = var_key
+            rem_file = pathlib.Path(file_name)
+            rem_file.unlink()  # entfernt die unter file_name heruntergeladene Datei
             return True
             # print(mycursor.rowcount, "record inserted.")
         else:
