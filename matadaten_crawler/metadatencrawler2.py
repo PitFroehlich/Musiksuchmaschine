@@ -13,8 +13,8 @@ start = time.time()
 # zur Installation von magic siehe hier: https://pypi.org/project/python-magic/
 mydb = mysql.connector.connect(
     host="localhost",
-    user="MusikDBNutzer",
-    password="test",
+    user="root",
+    password="",
     database="musiksuchmaschine"
 )
 
@@ -32,7 +32,7 @@ mycursor.execute(sql, )
 musikstuecktList = mycursor.fetchall()
 musikstuecktList = str(musikstuecktList)
 
-url = 'http://www1.cpdl.org/wiki/images/a/a5/Farewell%2C_my_joy.mxl'
+url = 'https://sing-kikk.de/download/Bruederchen-komm-tanz-mit-mir-XML.xml'
 # MXL BEISPIEL http://www1.cpdl.org/wiki/images/a/a5/Farewell%2C_my_joy.mxl
 # xml BEISPIEL https://hymnary.org/media/fetch/100034
 # midi Beispiel https://www.midiworld.com/download/3972

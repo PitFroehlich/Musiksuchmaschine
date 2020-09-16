@@ -1,20 +1,21 @@
 import mysql.connector
 import re
 from music21 import *
-
+import datetime
 
 
 
 #Verbindung zum Server
 mydb = mysql.connector.connect(
         host="localhost",
-        user="MusikDBNutzer",
-        password="test",
+        user="root",
+        password="",
         database="musiksuchmaschine"
     )
 #öffnet xml oder mxml und wandelt es in einen music21 Stream
 
-files=["1Certon-A_ce_matin.mxl",
+files=[#1Certon-A_ce_matin.mxl",
+    "Backe-Backe-Kuchen-ARR-Schmoll-XML.xml",
 "1Chap-fear.mxl",
 "1Compere-Va-t-en,_regret.mxl",
 "1Fair,_if_you_expect_admiring.mxl",
@@ -55,6 +56,24 @@ for file in files:
 #print(score.duration)
 
 #einzelen Variablen mit den entsprechenden Metadaten befüllen
+# viertel Note ist in Musescore auf 120 gesetzt, kann ich das hier auch irgendwie abrufen???
+    #varLength = score.duration.quarterLength
+    varLength = score.duration.quarterLength
+    BPM = score.metronomeMarkBoundaries(srcObj=None)
+    BPM = str(BPM)
+    BPM = re.search(r"<music21.tempo.MetronomeMark(.*?)>", BPM).group(1)
+    BPM = re.sub("[a-zA-Z, =]+", "",BPM)
+    print(BPM)
+    exit()
+    BPM = float(BPM) / 60
+    varLength = round(varLength / BPM)
+    varLength = str(datetime.timedelta(seconds=varLength))
+    varLength = str(varLength)
+    print(varLength)
+    print(BPM)
+    exit()
+#richtige Rechnung: BPM:60s = Ergebnis danach Duration : Ergebnis und abschließend Runden
+
     varTitle = score.metadata.title
     varComposer = score.metadata.composer
     varSonstiges = score.metadata.all()
@@ -92,7 +111,7 @@ for file in files:
     #in zukünftiger Version lieber URL zum Vergleichen nehmen
     if varTitle != None and varTitle not in musikstuecktList:
         mycursor = mydb.cursor()
-        sql = "INSERT INTO musikstueck (ID,Titel,Kuenstler_ID, Sonstiges) VALUES (Null, %s, %s, %s)"
+        sql = "INSERT INTO musikstueck (ID,Laenge, Titel,Kuenstler_ID, Sonstiges) VALUES (Null, %s, %s, %s)"
         val = (varTitle,myresult, varSonstiges)
         mycursor.execute(sql, val,)
         mydb.commit()
